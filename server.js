@@ -18,6 +18,7 @@ server.listen(3000, () => {
   console.log('connected');
 });
 
+
 matrix = [];
 grassArr = [];
 grassEaterArr = [];
@@ -97,12 +98,11 @@ function createObject(matrix) {
       }
     }
   }
-
+  
   io.sockets.emit('send matrix', matrix);
 }
 
 function stop() {
-  console.log('STOP');
   for (var y = 0; y < matrix.length; y++) {
     for (var x = 0; x < matrix[y].length; x++) {
       if (matrix[y][x] == 1) {
@@ -118,11 +118,10 @@ function stop() {
       }
     }
   }
-  // document.getElementById("demo").innerHTML = "Սեղմեք 'Run' կոճակը:";
+  
 }
 
 function run() {
-  console.log('RUN');
   for (var y = 0; y < matrix.length; y++) {
     for (var x = 0; x < matrix[y].length; x++) {
       if (matrix[y][x] == 1) {
@@ -147,7 +146,6 @@ function run() {
 }
 
 function clearm() {
-  console.log('CLEAR');
   for (var y = 0; y < matrix.length; y++) {
     for (var x = 0; x < matrix[y].length; x++) {
       if (matrix[y][x] == 1 || matrix[y][x] == 2 || matrix[y][x] == 3 || matrix[y][x] == 4 || matrix[y][x] == 5) {
@@ -218,7 +216,6 @@ function rand() {
 }
 
 function AddGrass() {
-  console.log('AddGrass');
   if(stop){
     run();
   }
@@ -237,11 +234,11 @@ function AddGrass() {
 
     }
   }
+  
   io.sockets.emit("send matrix", matrix);
 }
 
 function AddGrassEater() {
-  console.log('AddGrassEater');
   if(stop){
     run();
   }
@@ -260,11 +257,11 @@ function AddGrassEater() {
 
         }
     }
+    
     io.sockets.emit("send matrix", matrix);
 }
 
 function AddFier() {
-  console.log('AddFier');
   if(stop){
     run();
   }
@@ -277,12 +274,36 @@ function AddFier() {
       for (let x = 0; x < matrix[y].length; x++) {
 
           if (matrix[y][x] == 2) {
-              let eater = new GrassEater(x, y);
-              grassEaterArr.push(eater);
+              let eater = new Fier(x, y);
+              FierArr.push(eater);
           }
 
       }
   }
+  
+  io.sockets.emit("send matrix", matrix);
+}
+
+function AddallEater(){
+  if(stop){
+    run();
+  }
+  for (let i = 0; i < 1; i++) {
+      let x = Math.floor(Math.random() * 20);;
+      let y = Math.floor(Math.random() * 20);;
+      matrix[y][x] = 5;
+  }
+  for (let y = 0; y < matrix.length; y++) {
+      for (let x = 0; x < matrix[y].length; x++) {
+
+          if (matrix[y][x] == 2) {
+              let eater = new AllEater(x, y);
+              EaterArr.push(eater);
+          }
+
+      }
+  }
+  
   io.sockets.emit("send matrix", matrix);
 }
 
@@ -308,6 +329,7 @@ function game() {
     me.eat();
   }
 
+  
   io.sockets.emit("send matrix", matrix);
 }
 
@@ -317,8 +339,22 @@ if (
   WaterArr.length !== 0
 ) {
   stop();
-  // document.getElementById("demo").innerHTML =
-  //   "Քանի որ վանդակներում չկա ո՛չ գիշատիչ ո՛չ խոտակեր այդ պատճառով խաղը կանգենլ է, խնդրում ենք սեղմել 'Random' կոճակը:";
+}
+
+function winter(){
+
+}
+
+function spring(){
+  
+}
+
+function summer(){
+  
+}
+
+function autumn(){
+  
 }
 
 setInterval(game,500);
@@ -332,4 +368,5 @@ io.on('connection', function (socket) {
   socket.on('AddGrass', AddGrass);
   socket.on('AddGrassEater', AddGrassEater);
   socket.on('AddFier', AddFier);
+  socket.on('AddallEater', AddallEater)
 })
