@@ -161,9 +161,4 @@ function run() {
   socket.emit('Run');
 }
 
-
-setInterval(
-  function () {
     socket.on('send matrix', nkarel);
-  }, 700
-)

@@ -2,12 +2,6 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var fs = require("fs");
-var AllEater = require('./AllEater');
-var Fier = require('./Fier');
-var Grass = require('./Grass');
-var GrassEater = require('./GrassEater');
-var Water = require('./Water');
 
 app.use(express.static("."));
 
@@ -20,11 +14,6 @@ server.listen(3000, () => {
 
 
 matrix = [];
-grassArr = [];
-grassEaterArr = [];
-EaterArr = [];
-WaterArr = [];
-FierArr = [];
 
 function matrixGenerator(
   matrixSize,
@@ -66,7 +55,7 @@ function matrixGenerator(
     matrix[y][x] = 5;
   }
 }
-matrixGenerator(
+ matrixGenerator(
   20,
   10,
   10,
@@ -77,7 +66,24 @@ matrixGenerator(
 
 io.sockets.emit('send matrix', matrix);
 
-function createObject(matrix) {
+
+
+
+grassArr = [];
+grassEaterArr = [];
+EaterArr = [];
+WaterArr = [];
+FierArr = [];
+
+
+AllEater = require('./AllEater');
+Fier = require('./Fier');
+Grass = require('./Grass');
+GrassEater = require('./GrassEater');
+Water = require('./Water');
+
+
+function createObject() {
   for (let y = 0; y < matrix.length; y++) {
     for (let x = 0; x < matrix[y].length; x++) {
       if (matrix[y][x] == 1) {
@@ -134,15 +140,14 @@ function run() {
         var all = new AllEater(x, y);
         EaterArr.push(all);
       } else if (matrix[y][x] == 4) {
-        var wa = new Water(x, y);
-        WaterArr.push(wa);
+          var wa = new Water(x, y);
+          WaterArr.push(wa);
       } else if (matrix[y][x] == 5) {
         var fier = new Fier(x, y);
         FierArr.push(fier);
       }
     }
   }
-  // document.getElementById("demo").innerHTML = "";
 }
 
 function clearm() {
@@ -158,11 +163,10 @@ function clearm() {
       }
     }
   }
-  // document.getElementById("demo").innerHTML = "";
 }
 
 function rand() {
-  if (run) {
+  if (run()) {
     stop();
   }
   function matrixGenerator(
@@ -207,9 +211,9 @@ function rand() {
   }
   matrixGenerator(
     20,
-    Math.floor(Math.random() * 10),
-    Math.floor(Math.random() * 10),
-    Math.floor(Math.random() * 10),
+    10,
+    10,
+    10,
     1,
     2
   );
@@ -291,7 +295,7 @@ function AddallEater(){
   for (let i = 0; i < 1; i++) {
       let x = Math.floor(Math.random() * 20);;
       let y = Math.floor(Math.random() * 20);;
-      matrix[y][x] = 5;
+      matrix[y][x] = 3;
   }
   for (let y = 0; y < matrix.length; y++) {
       for (let x = 0; x < matrix[y].length; x++) {
@@ -309,9 +313,11 @@ function AddallEater(){
 
 
 function game() {
+
   for (let i = 0; i < WaterArr.length; i++) {
     var water = WaterArr[i];
     water.waterColor();
+    // console.log(i);
   }
 
   for (let i = 0; i < grassArr.length; i++) {
@@ -328,18 +334,11 @@ function game() {
     var me = EaterArr[i];
     me.eat();
   }
-
+  
   
   io.sockets.emit("send matrix", matrix);
 }
-
-if (
-  EaterArr.length == 0 &&
-  grassEaterArr.length == 0 &&
-  WaterArr.length !== 0
-) {
-  stop();
-}
+setInterval(game,500);
 
 function winter(){
 
@@ -357,10 +356,9 @@ function autumn(){
   
 }
 
-setInterval(game,500);
 
 io.on('connection', function (socket) {
-  createObject(matrix)
+  createObject()
   socket.on('Stop', stop);
   socket.on('Clear', clearm);
   socket.on('Run', run);

@@ -16,7 +16,6 @@ module.exports = class Water extends LivingCreature {
     }
 
     waterColor() {
-
         for (let i = 0; i < this.directions.length; i++) {
             let x = this.directions[i][0];
             let y = this.directions[i][1];
