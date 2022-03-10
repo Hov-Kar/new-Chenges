@@ -358,15 +358,15 @@ function autumn(){
 }
 
 function allcount() {
-  counts = {
+  countd = {
       grass: grassArr.length,
       grassEater: grassEaterArr.length,
       AllEater: EaterArr.length,
       Water: WaterArr.length,
       Fier: FierArr.length
   }
-  fs.writeFile("statistics.json", JSON.stringify(counts), function () {
-      io.sockets.emit("send datas", counts)
+  fs.writeFile("statistics.json", JSON.stringify(countd), function () {
+      io.sockets.emit("send datas", countd)
   })
 
 }
